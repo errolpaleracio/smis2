@@ -1,6 +1,14 @@
 <?php
 include 'db.php';
 session_start();
+$sales_date =  date('y-m-d');
+$discount = $_POST['discount'];
+$branch_id = $_SESSION['branch_id'];
 
-$stmt = $db->prepare('INSERT INTO sales(product_id, quantity, branch_id, sold, unit_price, discount) VALUES (?, ?, ?, ?, ?, ?)');
-$stmt->execute(array($_POST['product_id'], $_POST['quantity'], $_SESSION['branch_id'], date('y-m-d'), $_POST['unit_price'], $_POST['discount']));
+$stmt = $db->prepare('INSERT INTO sales(sales_date, discount, branch_id) VALUES (:sales_date, :discount, :branch_id)');
+$stmt->bindParam(':sales_date', $sales_date);
+$stmt->bindParam(':discount', $discount);
+$stmt->bindParam(':branch_id', $branch_id);
+
+$stmt->execute();
+echo $db->lastInsertId();

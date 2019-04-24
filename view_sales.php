@@ -1,27 +1,28 @@
 <?php
 $nav_path = 'nav.php';
 include 'header.php';
-$sql = 'SELECT sales.*, product_name, branch_name FROM sales INNER JOIN product ON sales.product_id=product.product_id INNER JOIN BRANCH ON sales.branch_id=branch.branch_id';
-$sql2 = 'SELECT SUM(sales.unit_price * sales.quantity - sales.discount) as total_sales FROM sales';
+$sql = 'SELECT sales.*, sum(unit_price * quantity) - discount as total_price,branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
+$sql2 = 'SELECT sum(unit_price * quantity) - sum(discount) as total_sales, branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
 if($_SESSION['branch_id'] != '3'){
 	$sql .= ' WHERE sales.branch_id=' . $_SESSION['branch_id'];
-	$sql2 .= ' WHERE branch_id='.$_SESSION['branch_id'];
+	$sql2 .= ' WHERE sales.branch_id='.$_SESSION['branch_id'];
 }else{
 	$sql .= ' WHERE sales.branch_id=' . $_GET['branch_id'];
-	$sql2 .= ' WHERE branch_id='.$_GET['branch_id'];
+	$sql2 .= ' WHERE sales.branch_id='.$_GET['branch_id'];
 }
 $stmt = $db->query($sql);
 if((@$_GET['search'])){
 	$start = "'" . @$_GET['start_date'] . "'";
 	$end = "'" . @$_GET['end_date'] . "'";
-	$sql .= ' AND sold BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
-	$sql2 .= ' AND sold BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
+	$sql .= ' AND sales_date BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
+	$sql2 .= ' AND sales_date BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
 }
 
+$sql .= ' group by sales.sales_id';
 //echo $sql . '<br>' . $sql2;
 $stmt = $db->query($sql);
 $sales = $stmt->fetchAll(PDO::FETCH_OBJ);
-//echo '<pre>', var_dump($sales), '</pre>';
+// echo '<pre>', var_dump($sales), '</pre>';
 $sth = $db->query($sql2);
 $total_sales = $sth->fetch(PDO::FETCH_OBJ);
 ?>
@@ -52,32 +53,57 @@ $total_sales = $sth->fetch(PDO::FETCH_OBJ);
 		<thead>
 			<tr>
 				<th>Sale Id</th>
-				<th>Product</th>
-				<th>Quantity</th>
+				<!-- <th>Total Price</th> -->
 				<th>Total Price</th>
 				<th>Discount</th>
-				<th>Discounted Price</th>
-				<th>Branch</th>
-				<th>Date of Purchased</th>
+				<th>Date of Transaction</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach($sales as $s):?>
 				<tr>
 					<td><?php echo $s->sales_id?></td>
-					<td><?php echo $s->product_name?></td>
-					<td><?php echo $s->quantity?></td>
-					<td><?php echo ($s->unit_price * $s->quantity)?></td>
+					<td><?php echo $s->total_price?></td>
 					<td><?php echo $s->discount?></td>
-					<td><?php echo ($s->unit_price * $s->quantity) - $s->discount?></td>
-					<td><?php echo $s->branch_name?></td>
-					<td><?php echo date_format(date_create($s->sold), 'M d, Y')?></td>
+					<td><?php echo date_format(date_create($s->sales_date), 'M d, Y')?></td>
+					<td><input type="button" class="btn btn-primary show_item_id" id="item-<?php echo $s->sales_id?>" value="View Details" data-toggle="modal" data-target="#viewDetailsModal"></td>
 				</tr>
 			<?php endforeach;?>
 		</tbody>
 	</table>
 </div>
+<!-- View Details Modal -->
+<div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailsModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Sales Items</h4>
+      </div>
+      <div class="modal-body" id="viewDetails">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- View Details Modal -->
 <script>
+function reload_item_details(id){
+	var url = 'get_sales_item.php';
+	if(id != 0)
+		url += '?sales_id=' + id;
+	$('#viewDetails').load(url);
+}
+
+$('.show_item_id').on('click', function(e){
+	var id = $(this).attr('id');
+	var sales_id = id.substring(5);
+	reload_item_details(sales_id);
+});
+
 $('.input-daterange').datepicker({
 	todayBtn:'linked',
 	format: "yyyy-mm-dd",
@@ -88,5 +114,6 @@ $('#order_data').DataTable({
 	buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
 });
 </script>
+
 <?php
 include 'footer.php';

@@ -15,7 +15,7 @@ $products = $db->query('SELECT product.*, brand.brand_name FROM product INNER JO
 <div class="container">
 	<div class="col-sm-9">
 		<form class="form-horizontal" method="post" id="salesForm">
-			<input type="hidden" name="price">
+			<!-- <input type="hidden" name="price"> -->
 			<div class="form-group">
 				<label class="col-sm-2 control-label">Product</label>
 				<div class="col-sm-4" id="products">
@@ -25,6 +25,10 @@ $products = $db->query('SELECT product.*, brand.brand_name FROM product INNER JO
 					<?php endforeach;?> 
 					</select>
 				</div>
+				<label class="col-sm-2 control-label">Price</label>
+				<div class="col-sm-2">
+					<input type="text" name="price" class="form-control" disabled>
+				</div>
 			</div>
 			
 			<div class="form-group">
@@ -32,14 +36,9 @@ $products = $db->query('SELECT product.*, brand.brand_name FROM product INNER JO
 				<div class="col-sm-4">
 					<input type="text" name="quantity" id="number" class="form-control" required min="1">
 				</div>
+				<label class="col-sm-2 control-label">On hand</label>
 				<div class="col-sm-2">
 					<input type="text" name="on_hand" class="form-control" disabled>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">Discount</label>
-				<div class="col-sm-4">
-					<input type="text" name="discount" class="form-control" value="0" required min="1">
 				</div>
 			</div>			
 			
@@ -56,8 +55,11 @@ $products = $db->query('SELECT product.*, brand.brand_name FROM product INNER JO
 				
 			</div>
 			<div class="panel-body">
-				<h3 class="total">Total: php0.00</h3>
-				<button type="button" id="payout" class="btn btn-primary">Payout</button>
+				<h3 >Total: php<span class="total">0.00</span></h3>
+				<label>Discount</label>
+				<input type="text" id="discount" class="form-control" value="0" required><br>
+				<button type="button" id="payout" class="btn btn-primary" value="0">Payout</button>
+				
 			</div>
 		</div>
 	</div>
@@ -67,9 +69,8 @@ $products = $db->query('SELECT product.*, brand.brand_name FROM product INNER JO
 				<th style="width: 80px">Product Id</th>
 				<th>Product Name</th>
 				<th style="width: 80px">Quantity</th>
-				<th class="hide_it">Price</th>
-				<th style="width: 80px">Discount</th>
-				<th style="width: 150px">Discounted Price</th>
+				<th class="hide_it">Price per item</th>
+				<th style="width: 150px">Total price</th>
 				<th style="width: 200px">Action</th>
 			</tr>
 		</thead>
@@ -89,22 +90,19 @@ $('input[name="submit"]').click(function(){
 	var product_id = $product.val();
 	var $quantity = $('input[name="quantity"]'); 
 	var quantity = $quantity.val();
-	var $discount = $('input[name="discount"]'); 
-	var discount = $discount.val();
 	var price = $('input[name="price"]').val();
 	var on_hand = $('[name="on_hand"]').val();
 		
 	if(parseInt(on_hand) >= parseInt(quantity)){
 		
-		data_set.push([product_id, product_name, quantity, price, discount]);
+		data_set.push([product_id, product_name, quantity, price]);
 		var total = 0;
 		for(i = 0; i < data_set.length; i++){
-			total += parseFloat(data_set[i][2] * data_set[i][3] - data_set[i][4]);
+			total += parseFloat(data_set[i][2] * data_set[i][3]);
 		}
 		$quantity.val('');
-		$discount.val('0');
-		$('.total').text('Total: Php: ' + total)
-		table.row.add([product_id, product_name, quantity, price * quantity, discount, price * quantity - discount,'<input type="button" name="update_item" value="Change" class="btn btn-primary"> <input type="button" name="remove_item" value="Void Item" class="btn btn-danger">']).draw();
+		$('.total').text(total)
+		table.row.add([product_id, product_name, quantity, price, price * quantity,'<input type="button" name="update_item" value="Change" class="btn btn-primary"> <input type="button" name="remove_item" value="Void Item" class="btn btn-danger">']).draw();
 		row_index++;
 		$('[name="on_hand"]').val(on_hand-quantity);
 		
@@ -133,11 +131,24 @@ function get_count(){
 	});
 }
 $('#payout').click(function(){
+	var discount = $('#discount').val();
 	if(data_set.length > 0){
-		$.each(data_set, function(index, val) {
-			$.post('add_sale.php', {product_id: val[0], quantity: val[2], unit_price: val[3], discount: val[4]}, function(data, textStatus, xhr) {
-				//console.log(xhr.responseText);
+		var sales_id = null;
+		$.ajax({
+				type: 'POST',
+				async: false,
+				url: 'add_sale.php',
+				data: {discount: discount},
+				success: function(data, textStatus, xhr){
+					sales_id = parseInt(xhr.responseText);
+					alert('Sale was successfully added')
+				}
 			});
+		$.each(data_set, function(index, val) {
+			$.post('add_sales_item.php',  {product_id: val[0], quantity: val[2], unit_price: val[3], sales_id: sales_id}, function(data, textStatus, xhr) {
+				console.log(xhr.responseText);
+			});
+			
 			
 			$.post('update_count.php', {product_id: val[0], quantity: val[2]}, function(data, textStatus, xhr) {
 				
@@ -154,7 +165,7 @@ $(document).on('click', '[name="update_item"]', function(){
 	var product_id = data_set[index][0];
 	var quantity = data_set[index][2];
 	var $td = $(this).parents('tr').children('td').eq(2);
-	var $td_price = $(this).parents('tr').children('td').eq(3);
+	var $td_price = $(this).parents('tr').children('td').eq(4);
 	var $td_discounted_price = $(this).parents('tr').children('td').eq(5);
 	if($(this).val() == 'Change'){
 		$(this).val('Update');
@@ -173,12 +184,11 @@ $(document).on('click', '[name="update_item"]', function(){
 		if(product_id == selected_item_id)
 			$('[name="on_hand"]').val(parseInt(on_hand) - parseInt(quantity));
 			$td_price.html(parseInt(data_set[index][2] * data_set[index][3]));
-			$td_price.html(parseInt(data_set[index][2] * data_set[index][3] - data_set[index][4]));
 		var total = 0;
 		for(i = 0; i < data_set.length; i++){
-			total += parseFloat(data_set[i][2] * data_set[i][3] - data_set[i][4]);
+			total += parseFloat(data_set[i][2] * data_set[i][3]);
 		}
-		$('.total').text('Total: Php: ' + total)	
+		$('.total').text(total)	
 	}
 	
 	//data_set.splice(index, 1);	
@@ -199,6 +209,10 @@ $(document).on('click', '[name="remove_item"]', function(){
 		$('[name="on_hand"]').val(parseInt(on_hand) + parseInt(quantity));
 	
 	table.row($(this).parents('tr')).remove().draw();
+	for(i = 0; i < data_set.length; i++){
+			total += parseFloat(data_set[i][2] * data_set[i][3]);
+		}
+	$('.total').text(total)	
 });
 /*
 function load_products(brand_id){
@@ -224,6 +238,34 @@ number.onkeydown = function(e) {
         return false;
     }
 }
+
+var number = document.getElementById('discount');
+ 
+// Listen for input event on numInput.
+number.onkeydown = function(e) {
+    if(e.keyCode == 190)
+			return true;
+		if(!((e.keyCode > 95 && e.keyCode < 106)
+      || (e.keyCode > 47 && e.keyCode < 58) 
+      || e.keyCode == 8)) {
+        return false;
+    }
+}
+
+$('#discount').on('keyup', function(){
+	var total = 0;
+	for(i = 0; i < data_set.length; i++){
+		total += parseFloat(data_set[i][2] * data_set[i][3]);
+	}
+	
+	if(total == 0)
+		return false;
+	var discount = $(this).val();
+	if(discount.length == 0)
+		discount = 0;
+	$('.total').text(total - parseFloat(discount))
+});
+
 </script>
 
 <?php
