@@ -52,7 +52,7 @@ CREATE TABLE `brand` (
   `brand_name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`brand_id`),
   UNIQUE KEY `brand_name` (`brand_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `brand` (
 
 LOCK TABLES `brand` WRITE;
 /*!40000 ALTER TABLE `brand` DISABLE KEYS */;
-INSERT INTO `brand` VALUES (85,'Apple'),(77,'Armak'),(68,'BOSNY'),(58,'Domino'),(69,'DSK'),(55,'E-power'),(57,'Global'),(79,'Gonvince'),(53,'GPC'),(80,'Japan'),(82,'Kawasaki'),(54,'Kawata'),(65,'KMN'),(50,'KSR'),(62,'MKT'),(81,'Mokoto'),(66,'Monster'),(49,'Motolight'),(59,'MTR'),(60,'NGK'),(71,'NHK'),(56,'POSH'),(64,'RG3'),(67,'Rizoma'),(84,'SPD'),(86,'Sun'),(83,'Suzuki'),(61,'Tamago'),(78,'Top 1'),(51,'Total'),(52,'Type R'),(63,'Yamaha'),(48,'Yamakoto'),(76,'YSK');
+INSERT INTO `brand` VALUES (85,'Apple'),(77,'Armak'),(68,'BOSNY'),(58,'Domino'),(69,'DSK'),(55,'E-power'),(57,'Global'),(79,'Gonvince'),(53,'GPC'),(80,'Japan'),(88,'jm'),(82,'Kawasaki'),(54,'Kawata'),(65,'KMN'),(50,'KSR'),(62,'MKT'),(81,'Mokoto'),(66,'Monster'),(49,'Motolight'),(59,'MTR'),(60,'NGK'),(71,'NHK'),(56,'POSH'),(64,'RG3'),(67,'Rizoma'),(84,'SPD'),(86,'Sun'),(83,'Suzuki'),(61,'Tamago'),(87,'test'),(78,'Top 1'),(51,'Total'),(52,'Type R'),(63,'Yamaha'),(48,'Yamakoto'),(76,'YSK');
 /*!40000 ALTER TABLE `brand` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,7 +84,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`product_id`),
   KEY `brand_id` (`brand_id`),
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (11,'Hand Grip',150.00,220,30,'\0',1,58),(12,'Air Filter',150.00,250,20,'\0',1,48),(13,'Handle Lever',500.00,70,20,'\0',1,59),(14,'Horn',200.00,79,20,'\0',1,57),(15,'Slider',350.00,115,40,'\0',1,67),(16,'Brake Lamp',100.00,50,10,'\0',1,52),(17,'Volt Meter',200.00,50,15,'\0',1,69),(18,'Led',450.00,85,20,'\0',1,57),(19,'Ignition Switch',150.00,90,20,'\0',1,61),(20,'Spark Plug',150.00,100,20,'\0',1,60),(21,'Flasher',100.00,120,20,'\0',1,56),(22,'Break Shoe',100.00,90,15,'\0',1,54),(23,'Rear Sprocket',250.00,120,20,'\0',1,50),(24,'Side Mirror',100.00,110,30,'\0',1,65),(25,'Flyball',250.00,90,20,'\0',1,57),(26,'CDI',250.00,100,20,'\0',1,55),(27,'Bulb',35.00,130,20,'\0',1,55),(28,'Spray Paint',120.00,90,10,'\0',1,68),(29,'Oil Filter',85.00,110,20,'\0',1,63),(30,'Bering',75.00,100,20,'\0',1,50),(31,'Break Pad',100.00,115,20,'\0',1,53),(32,'Battery',570.00,15,10,'\0',1,49),(33,'Helmet',3000.00,20,5,'\0',1,71),(34,'Shocks',650.00,30,10,'\0',1,64),(35,'Sit Cover',150.00,80,20,'\0',1,66),(36,'Brake Fluid',50.00,110,20,'\0',1,51),(37,'Knee Pad',550.00,60,15,'\0',1,62),(38,'Battery',570.00,60,10,'\0',2,49),(39,'Head Packing',250.00,100,10,'\0',2,79),(40,'Helmet',3000.00,40,10,'\0',2,71),(41,'Electrical Tape',30.00,100,20,'\0',2,77),(42,'Side Gasket',85.00,50,10,'\0',2,85),(43,'Gear Oil',120.00,60,10,'\0',2,78),(44,'Mirror',170.00,70,10,'\0',2,81),(45,'Headlight',300.00,95,15,'\0',2,80),(46,'Tail Light',200.00,50,10,'\0',2,80),(47,'Oil Filter',85.00,80,15,'\0',2,63),(48,'Oil Filter',85.00,60,10,'\0',2,83),(49,'Oil Filter',85.00,65,15,'\0',2,82),(50,'Spark Plug cap',35.00,80,15,'\0',2,55),(51,'Throttle cable',100.00,80,10,'\0',2,76),(52,'Clutch cable',100.00,80,10,'\0',2,76),(53,'Brake cable',100.00,85,10,'\0',2,76),(54,'Speedo cable',100.00,90,15,'\0',2,76),(55,'Fuel tank cap',250.00,80,15,'\0',2,50),(56,'Sprocket',85.00,90,20,'\0',2,86),(57,'Spray Paint',120.00,90,10,'\0',2,68),(58,'Rim',1000.00,80,10,'\0',2,84),(59,'Sit Cover',150.00,80,10,'\0',2,66),(60,'Volt Meter',200.00,50,10,'\0',2,69),(61,'Horn',200.00,70,15,'\0',2,57);
+INSERT INTO `product` VALUES (11,'Hand Grip',150.00,220,30,'\0',1,58),(12,'Air Filter',150.00,245,10,'\0',1,48),(13,'Handle Lever',500.00,70,20,'\0',1,59),(14,'Horn',200.00,79,20,'\0',1,57),(15,'Slider',350.00,115,40,'\0',1,67),(16,'Brake Lamp',100.00,50,10,'\0',1,52),(17,'Volt Meter',200.00,50,15,'\0',1,69),(18,'Led',450.00,85,20,'\0',1,57),(19,'Ignition Switch',150.00,90,20,'\0',1,61),(20,'Spark Plug',150.00,100,20,'\0',1,60),(21,'Flasher',100.00,120,20,'\0',1,56),(22,'Break Shoe',100.00,90,15,'\0',1,54),(23,'Rear Sprocket',250.00,120,20,'\0',1,50),(24,'Side Mirror',100.00,110,30,'\0',1,65),(25,'Flyball',250.00,90,20,'\0',1,57),(26,'CDI',250.00,100,20,'\0',1,55),(27,'Bulb',35.00,129,20,'\0',1,55),(28,'Spray Paint',120.00,90,10,'\0',1,68),(29,'Oil Filter',85.00,110,20,'\0',1,63),(30,'Bering',75.00,98,20,'\0',1,50),(31,'Break Pad',100.00,104,20,'\0',1,53),(32,'Battery',570.00,14,10,'\0',1,49),(33,'Helmet',3000.00,20,5,'\0',1,71),(34,'Shocks',650.00,30,10,'\0',1,64),(35,'Sit Cover',150.00,80,20,'\0',1,66),(36,'Brake Fluid',50.00,105,20,'\0',1,51),(37,'Knee Pad',550.00,60,15,'\0',1,62),(38,'Battery',570.00,90,10,'\0',2,49),(39,'Head Packing',250.00,100,10,'\0',2,79),(40,'Helmet',3000.00,40,10,'\0',2,71),(41,'Electrical Tape',30.00,100,20,'\0',2,77),(42,'Side Gasket',85.00,50,10,'\0',2,85),(43,'Gear Oil',120.00,60,10,'\0',2,78),(44,'Mirror',170.00,70,10,'\0',2,81),(45,'Headlight',300.00,95,15,'\0',2,80),(46,'Tail Light',200.00,50,10,'\0',2,80),(47,'Oil Filter',85.00,80,15,'\0',2,63),(48,'Oil Filter',85.00,60,10,'\0',2,83),(49,'Oil Filter',85.00,65,15,'\0',2,82),(50,'Spark Plug cap',35.00,80,15,'\0',2,55),(51,'Throttle cable',100.00,80,10,'\0',2,76),(52,'Clutch cable',100.00,72,10,'\0',2,76),(53,'Brake cable',100.00,84,10,'\0',2,76),(54,'Speedo cable',100.00,90,15,'\0',2,76),(55,'Fuel tank cap',250.00,80,15,'\0',2,50),(56,'Sprocket',85.00,90,20,'\0',2,86),(57,'Spray Paint',120.00,90,10,'\0',2,68),(58,'Rim',1000.00,80,10,'\0',2,84),(59,'Sit Cover',150.00,80,10,'\0',2,66),(60,'Volt Meter',200.00,50,10,'\0',2,69),(61,'Horn',200.00,70,15,'\0',2,57);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,16 +130,14 @@ DROP TABLE IF EXISTS `sales`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sales` (
   `sales_id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `sold` date NOT NULL,
-  `unit_price` decimal(13,2) DEFAULT NULL,
-  `discount` decimal(11,2) DEFAULT NULL,
+  `sales_date` date DEFAULT NULL,
+  `discount` decimal(13,2) DEFAULT NULL,
   `branch_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`sales_id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  KEY `branch_id` (`branch_id`),
+  CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE,
+  CONSTRAINT `sales_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,8 +146,38 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,12,10,'2019-04-01',150.00,20.00,1),(2,15,5,'2019-04-02',350.00,20.00,1),(3,11,3,'2019-04-02',150.00,0.00,1),(4,11,7,'2019-04-02',150.00,10.00,1);
+INSERT INTO `sales` VALUES (15,'2019-04-24',20.00,1),(16,'2019-04-24',20.00,1),(17,'2019-04-24',50.00,1),(18,'2019-04-24',0.00,1);
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sales_item`
+--
+
+DROP TABLE IF EXISTS `sales_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sales_item` (
+  `sales_item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `unit_price` decimal(13,2) DEFAULT NULL,
+  `sales_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`sales_item_id`),
+  KEY `product_id` (`product_id`),
+  KEY `sales_id` (`sales_id`),
+  CONSTRAINT `sales_item_ibfk_1` FOREIGN KEY (`sales_id`) REFERENCES `sales` (`sales_id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sales_item`
+--
+
+LOCK TABLES `sales_item` WRITE;
+/*!40000 ALTER TABLE `sales_item` DISABLE KEYS */;
+INSERT INTO `sales_item` VALUES (13,12,1,150.00,15),(14,32,1,570.00,15),(15,36,2,50.00,15),(16,27,1,35.00,16),(17,31,1,100.00,16),(18,30,2,75.00,17),(19,12,1,150.00,17),(20,36,3,50.00,17),(21,12,2,150.00,18);
+/*!40000 ALTER TABLE `sales_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -218,4 +246,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-13 22:31:59
+-- Dump completed on 2019-04-24 12:02:55
