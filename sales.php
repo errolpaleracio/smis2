@@ -57,7 +57,7 @@ $products = $db->query('SELECT product.*, brand.brand_name FROM product INNER JO
 			<div class="panel-body">
 				<h3 >Total: php<span class="total">0.00</span></h3>
 				<label>Discount</label>
-				<input type="text" id="discount" class="form-control" value="0" required><br>
+				<input type="text" id="discount" class="form-control" required><br>
 				<button type="button" id="payout" class="btn btn-primary" value="0">Payout</button>
 				
 			</div>
@@ -243,7 +243,7 @@ var number = document.getElementById('discount');
  
 // Listen for input event on numInput.
 number.onkeydown = function(e) {
-    if(e.keyCode == 190)
+    if(e.keyCode == 190 || e.keyCode == 8)
 			return true;
 		if(!((e.keyCode > 95 && e.keyCode < 106)
       || (e.keyCode > 47 && e.keyCode < 58) 
@@ -251,19 +251,32 @@ number.onkeydown = function(e) {
         return false;
     }
 }
-
-$('#discount').on('keyup', function(){
+var input = '';
+$('#discount').on('keydown', function(e){
 	var total = 0;
 	for(i = 0; i < data_set.length; i++){
 		total += parseFloat(data_set[i][2] * data_set[i][3]);
 	}
-	
+	var ch = String.fromCharCode(e.which);
+	if(parseFloat(input + ch) >= total)
+		return false;
 	if(total == 0)
 		return false;
-	var discount = $(this).val();
-	if(discount.length == 0)
-		discount = 0;
-	$('.total').text(total - parseFloat(discount))
+	if(e.which == 8 && input.length > 0)
+		input = input.substring(0, input.length-1);
+	if(e.which >= 48 && e.which <= 57)
+		input += ch;
+	console.log(input);
+	
+	
+	
+	var discount = 0;
+	
+	
+	if(input.length > 0 && parseFloat(input) < total)
+		$('.total').text(total - parseFloat(input))
+	if(input.length == 0)
+	$('.total').text(total)
 });
 
 </script>
