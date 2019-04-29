@@ -93,7 +93,7 @@ $('input[name="submit"]').click(function(){
 	var price = $('input[name="price"]').val();
 	var on_hand = $('[name="on_hand"]').val();
 		
-	if(parseInt(on_hand) >= parseInt(quantity)){
+	if(parseInt(on_hand) >= parseInt(quantity) && parseInt(quantity) > 0){
 		
 		data_set.push([product_id, product_name, quantity, price]);
 		var total = 0;

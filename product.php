@@ -134,7 +134,7 @@ if(isset($_POST['submit'])){
 			<h4 class="modal-title" id="myModalLabel">Restock product</h4>
 		</div>
 		<div class="modal-body">
-			<form class="form-horizontal" action="restock_product.php" method="post">
+			<form class="form-horizontal" action="restock_product.php" method="post" id="restockForm">
 				<div class="form-group">
 					<label class="control-label col-sm-4">Quantity</label>
 					<div class="col-sm-8">
@@ -188,6 +188,25 @@ $(document).ready(function(){
 		var id = $(this).attr('id');
 		$('[name="id"]').val(id);
 	});	
+
+	$('#restockForm').on('submit', function(e){
+		
+		var id = $('[name="id"]').val();
+		var qty = $('[name="qty"]').val();
+		$.ajax({
+			url: 'check_critical_lvl.php',
+			async: false,
+			contentType: 'application/x-www-form-urlencoded',
+			data: {product_id : id},
+			dataType: 'JSON',
+			success: function(data){
+				if((parseInt(qty) + parseInt(data.quantity)) <= parseInt(data.critical_lvl)){
+					e.preventDefault();
+					alert('Quantity Must greater than critical lvl');
+				}
+			}
+		});
+	});
 	
 	$('#addBrandForm').on('submit', function(e){
 		e.preventDefault();

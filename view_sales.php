@@ -111,8 +111,61 @@ $('.input-daterange').datepicker({
 });
 $('#order_data').DataTable({
 	dom: 'Bfrtip',
-	buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+	//buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+	buttons: [
+		{
+			extend: 'pdf',
+			exportOptions: {
+				columns: [0,1,2,3]
+			},customize: function(doc) {
+          //pageMargins [left, top, right, bottom] 
+          doc.pageMargins = [ 150, 20, 150, 20 ];
+       }
+		},{
+			extend: 'print',
+			exportOptions: {
+				columns: [0,1,2,3]
+			}
+		},{
+			extend: 'excel',
+			exportOptions: {
+				columns: [0,1,2,3]
+			}
+		},{
+			extend: 'csv',
+			exportOptions: {
+				columns: [0,1,2,3]
+			}
+		}
+	]
 });
+
+	// {
+	// 		extend: 'copy',
+	// 		exportOptions: {
+	// 			columns [1,2,3]
+	// 		}
+	// 	},{
+	// 		extend: 'csv',
+	// 		exportOptions: {
+	// 			columns [1,2,3]
+	// 		}
+	// 	},{
+	// 		extend: 'excel',
+	// 		exportOptions: {
+	// 			columns [1,2,3]
+	// 		}
+	// 	},{
+	// 		extend: 'pdf',
+	// 		exportOptions: {
+	// 			columns [1,2,3]
+	// 		}
+	// 	},{
+	// 		extend: 'print',
+	// 		exportOptions: {
+	// 			columns [1,2,3]
+	// 		}
+	// 	}
 </script>
 
 <?php
