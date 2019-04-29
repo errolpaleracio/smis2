@@ -15,7 +15,7 @@ if(isset($_POST['submit'])){
 <div class="container">
 	<h3>Add Product</h3>
 	<?php if($_SESSION['branch_id'] != '3'):?>
-	<form class="form-horizontal" method="post">
+	<form class="form-horizontal" method="post" id="addProduct">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Product Name</label>
 			<div class="col-sm-4">
@@ -32,6 +32,7 @@ if(isset($_POST['submit'])){
 			<label class="col-sm-2 control-label">Quantity</label>
 			<div class="col-sm-4">
 				<input type="text" name="quantity" class="form-control" required>
+				<span id="error_check_critical_lvl" class="text-primary pull-left" style="font-size: 1.3em"></span>
 			</div>
 		</div>
 		<div class="form-group">
@@ -189,24 +190,33 @@ $(document).ready(function(){
 		$('[name="id"]').val(id);
 	});	
 
-	$('#restockForm').on('submit', function(e){
-		
-		var id = $('[name="id"]').val();
-		var qty = $('[name="qty"]').val();
-		$.ajax({
-			url: 'check_critical_lvl.php',
-			async: false,
-			contentType: 'application/x-www-form-urlencoded',
-			data: {product_id : id},
-			dataType: 'JSON',
-			success: function(data){
-				if((parseInt(qty) + parseInt(data.quantity)) <= parseInt(data.critical_lvl)){
-					e.preventDefault();
-					alert('Quantity Must greater than critical lvl');
-				}
-			}
-		});
+	$('#addProduct').on('submit', function(e){
+		var qty = $('[name="quantity"]').val();
+		var crit_lvl = $('[name="critical_lvl"]').val();
+
+		if(qty <= crit_lvl){
+			e.preventDefault();
+			alert('Quantity must be greater that critical level');
+		}
 	});
+	// $('#restockForm').on('submit', function(e){
+		
+	// 	var id = $('[name="id"]').val();
+	// 	var qty = $('[name="qty"]').val();
+	// 	$.ajax({
+	// 		url: 'check_critical_lvl.php',
+	// 		async: false,
+	// 		contentType: 'application/x-www-form-urlencoded',
+	// 		data: {product_id : id},
+	// 		dataType: 'JSON',
+	// 		success: function(data){
+	// 			if((parseInt(qty) + parseInt(data.quantity)) <= parseInt(data.critical_lvl)){
+	// 				e.preventDefault();
+	// 				alert('Quantity Must greater than critical lvl');
+	// 			}
+	// 		}
+	// 	});
+	// });
 	
 	$('#addBrandForm').on('submit', function(e){
 		e.preventDefault();
