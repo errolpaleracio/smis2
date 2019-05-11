@@ -193,11 +193,12 @@ $(document).ready(function(){
 	$('#addProduct').on('submit', function(e){
 		var qty = $('[name="quantity"]').val();
 		var crit_lvl = $('[name="critical_lvl"]').val();
-
-		if(qty <= crit_lvl){
+		
+		if(parseFloat(qty) <= parseFloat(crit_lvl)){
 			e.preventDefault();
 			alert('Quantity must be greater that critical level');
 		}
+		
 	});
 	// $('#restockForm').on('submit', function(e){
 		
@@ -239,7 +240,7 @@ $(document).ready(function(){
 							if(data == 1){
 								$('#addBrandForm').find('input[name="brand_name"]').val('');
 								alert('Brand successfully added');
-								
+								$('#brandId').load('get_brands.php')
 							}
 						}
 					});
