@@ -20,4 +20,4 @@ $stmt3 = $db->prepare('UPDATE product SET quantity=quantity+:quantity WHERE prod
 $stmt3->bindParam(':quantity', $quantity);
 $stmt3->bindParam(':product_id', $product_id);
 echo 'stmt3: ', $stmt3->execute(), '<br>';
-//header('location: http://localhost/smis-master/view_item_details.php?sales_id=' . $sales_id);
+header('location: http://localhost/smis-master/view_item_details.php?sales_id=' . $sales_id);
