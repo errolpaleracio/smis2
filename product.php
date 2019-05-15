@@ -4,8 +4,8 @@ $nav_path = 'nav.php';
 include 'header.php';
 
 if(isset($_POST['submit'])){
-	$stmt = $db->prepare('INSERT INTO PRODUCT (product_name, unit_price, quantity, branch_id, critical_lvl, brand_id) values (?, ?, ?, ?, ?, ?)');
-	$result = $stmt->execute(array($_POST['product_name'], $_POST['unit_price'], $_POST['quantity'], $_SESSION['branch_id'], $_POST['critical_lvl'], $_POST['brand_id']));
+	$stmt = $db->prepare('INSERT INTO PRODUCT (product_name, unit_price, quantity, branch_id, critical_lvl, brand_id, original_price) values (?, ?, ?, ?, ?, ?, ?)');
+	$result = $stmt->execute(array($_POST['product_name'], $_POST['unit_price'], $_POST['quantity'], $_SESSION['branch_id'], $_POST['critical_lvl'], $_POST['brand_id'], $_POST['original_price']));
 	if($result){
 		echo '<script>window.onload = function(){alert("Product successfully added.")}</script>';
 	}
@@ -13,7 +13,7 @@ if(isset($_POST['submit'])){
 ?>
 
 <div class="container">
-	<h3>Add Product</h3>
+	<h3>Products</h3>
 	<?php if($_SESSION['branch_id'] != '3'):?>
 	<form class="form-horizontal" method="post" id="addProduct">
 		<div class="form-group">
@@ -28,6 +28,14 @@ if(isset($_POST['submit'])){
 				<input type="text" name="unit_price" class="form-control" required>
 			</div>
 		</div>
+		<!-- new -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Original Price</label>
+			<div class="col-sm-4">
+				<input type="text" name="original_price" class="form-control" required>
+			</div>
+		</div>
+		<!-- end new -->
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Quantity</label>
 			<div class="col-sm-4">
@@ -68,6 +76,7 @@ if(isset($_POST['submit'])){
 				<th>Brand</th>
 				<th>Quantity</th>
 				<th>Unit Price</th>
+				<th>Original Price</th>
 				<th>Critical Level</th>
 				<?php if($_SESSION['branch_id'] != '3'):?>
 					<th>Actions</th>
@@ -109,6 +118,7 @@ if(isset($_POST['submit'])){
 					<td><?php echo $p->brand_name?></td>
 					<td><?php echo $p->quantity?></td>
 					<td><?php echo $p->unit_price?></td>
+					<td><?php echo $p->original_price?></td>
 					<td><?php echo $p->critical_lvl?></td>
 					<?php if($_SESSION['branch_id'] != '3'):?>
 						<?php if($p->archived == '0'):?>
@@ -185,7 +195,7 @@ $(document).ready(function(){
 	$('#table').DataTable();
 	$('#brandId').load('get_brands.php');
 	
-	$('.restock').click(function(event) {
+	$(document).on('click', '.restock', function(event) {
 		var id = $(this).attr('id');
 		$('[name="id"]').val(id);
 	});	
@@ -193,6 +203,8 @@ $(document).ready(function(){
 	$('#addProduct').on('submit', function(e){
 		var qty = $('[name="quantity"]').val();
 		var crit_lvl = $('[name="critical_lvl"]').val();
+		
+		var original_price = parseFloat($('[name="critical_lvl"]').val()); //new
 		
 		if(parseFloat(qty) <= parseFloat(crit_lvl)){
 			e.preventDefault();

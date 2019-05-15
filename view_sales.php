@@ -1,14 +1,17 @@
 <?php
 $nav_path = 'nav.php';
 include 'header.php';
-$sql = 'SELECT sales.*, sum(unit_price * quantity) - discount as total_price,branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
-$sql2 = 'SELECT sum(unit_price * quantity) - sum(discount) as total_sales, branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
+$sql = 'SELECT sales.*, sum(unit_price * quantity) - discount as total_price, sum(original_price * quantity) as total_original_price,branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
+$sql2 = 'SELECT sum(sales_item.unit_price * sales_item.quantity) - sum(discount) as total_sales, branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
+$sql3 = 'SELECT sum(sales_item.unit_price * sales_item.quantity) - sum(original_price * sales_item.quantity) - sum(discount) as total_sales, branch_name FROM sales INNER JOIN BRANCH ON sales.branch_id=branch.branch_id inner join sales_item on sales.sales_id=sales_item.sales_id ';
 if($_SESSION['branch_id'] != '3'){
 	$sql .= ' WHERE sales.branch_id=' . $_SESSION['branch_id'];
-	$sql2 .= ' WHERE sales.branch_id='.$_SESSION['branch_id'];
+	$sql2 .= ' WHERE sales.branch_id='.$_SESSION['branch_id'] . ' AND sales_item.refunded=0 ';
+	$sql3 .= ' WHERE sales.branch_id='.$_SESSION['branch_id'] . ' AND sales_item.refunded=0 ';
 }else{
 	$sql .= ' WHERE sales.branch_id=' . $_GET['branch_id'];
-	$sql2 .= ' WHERE sales.branch_id='.$_GET['branch_id'];
+	$sql2 .= ' WHERE sales.branch_id='.$_GET['branch_id']  . ' AND sales_item.refunded=0 ';
+	$sql3 .= ' WHERE sales.branch_id='.$_GET['branch_id']  . ' AND sales_item.refunded=0 ';
 }
 $stmt = $db->query($sql);
 if((@$_GET['search'])){
@@ -16,6 +19,7 @@ if((@$_GET['search'])){
 	$end = "'" . @$_GET['end_date'] . "'";
 	$sql .= ' AND sales_date BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
 	$sql2 .= ' AND sales_date BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
+	$sql3 .= ' AND sales_date BETWEEN CAST(' . $start . ' AS DATE) AND CAST(' . $end . ' AS DATE)';
 }
 
 $sql .= ' group by sales.sales_id';
@@ -25,10 +29,16 @@ $sales = $stmt->fetchAll(PDO::FETCH_OBJ);
 // echo '<pre>', var_dump($sales), '</pre>';
 $sth = $db->query($sql2);
 $total_sales = $sth->fetch(PDO::FETCH_OBJ);
+$sth2 = $db->query($sql3);
+$total_sales2 = $sth2->fetch(PDO::FETCH_OBJ);
 ?>
+<script>
+var current_url = window.location.href;
+</script>
 <div class="container">
-    
-	<h1>Total Sales: <?php echo $total_sales->total_sales?></h1>
+  <input type="hidden" id="branchID" value="<?php echo $_GET['branch_id']?>">
+	<h1>Gross Sales: <?php echo $total_sales->total_sales?></h1>
+	<h1>Net Sales: <?php echo $total_sales2->total_sales?></h1>
 	<div class="row">
 		<form method="GET" action="">
 		<?php if(isset($_GET['branch_id'])):?>
@@ -53,8 +63,8 @@ $total_sales = $sth->fetch(PDO::FETCH_OBJ);
 		<thead>
 			<tr>
 				<th>Sale Id</th>
-				<!-- <th>Total Price</th> -->
 				<th>Total Price</th>
+				<th>Total Original Price</th>
 				<th>Discount</th>
 				<th>Date of Transaction</th>
 				<th>Action</th>
@@ -65,9 +75,10 @@ $total_sales = $sth->fetch(PDO::FETCH_OBJ);
 				<tr>
 					<td><?php echo $s->sales_id?></td>
 					<td><?php echo $s->total_price?></td>
+					<td><?php echo $s->total_original_price?></td>
 					<td><?php echo $s->discount?></td>
 					<td><?php echo date_format(date_create($s->sales_date), 'M d, Y')?></td>
-					<td><input type="button" class="btn btn-primary show_item_id" id="item-<?php echo $s->sales_id?>" value="View Details" data-toggle="modal" data-target="#viewDetailsModal"></td>
+					<td><a href="view_item_details.php?sales_id=<?php echo $s->sales_id;?>" class="btn btn-primary">View Details</a></td>
 				</tr>
 			<?php endforeach;?>
 		</tbody>

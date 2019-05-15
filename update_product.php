@@ -4,8 +4,8 @@ include 'header.php';
 
 
 if(isset($_POST['submit'])){
-	$stmt = $db->prepare('UPDATE product SET product_name=?, unit_price=?, critical_lvl=?, brand_id=? WHERE product_id=?');
-	$result = $stmt->execute(array($_POST['product_name'], $_POST['unit_price'], $_POST['critical_lvl'], $_POST['brand_id'], $_POST['product_id']));
+	$stmt = $db->prepare('UPDATE product SET product_name=?, unit_price=?, critical_lvl=?, brand_id=?, original_price=? WHERE product_id=?');
+	$result = $stmt->execute(array($_POST['product_name'], $_POST['unit_price'], $_POST['critical_lvl'], $_POST['brand_id'], $_POST['original_price'], $_POST['product_id']));
 	if($result){
 		echo '<script>window.onload = function(){alert("Product successfully updated.")}</script>';
 	}
@@ -27,6 +27,12 @@ $product = $stmt->fetch(PDO::FETCH_OBJ);
 			<label class="col-sm-2 control-label">Unit Price</label>
 			<div class="col-sm-4">
 				<input type="text" name="unit_price" value="<?php echo $product->unit_price?>" class="form-control" required>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Original Price</label>
+			<div class="col-sm-4">
+				<input type="text" name="original_price" value="<?php echo $product->original_price?>" class="form-control" required>
 			</div>
 		</div>
 		<div class="form-group">

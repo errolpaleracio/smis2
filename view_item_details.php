@@ -1,6 +1,6 @@
 <?php
-include 'db.php';
-session_start();
+$nav_path = 'nav.php';
+include 'header.php';
 $sales_id = $_GET['sales_id'];
 $stmt = $db->prepare('select sales_item.*, product_name from sales_item inner join product on sales_item.product_id=product.product_id WHERE sales_id=:sales_id;');
 $stmt->bindParam(':sales_id', $sales_id);
@@ -14,7 +14,7 @@ $stmt->execute();
 $sale = $stmt->fetch(PDO::FETCH_OBJ);
 $discount = $sale->discount;
 ?>
-
+<div class="container">
 <table class="table">
     <thead>
 	    <tr>
@@ -34,7 +34,15 @@ $discount = $sale->discount;
                 <td><?php echo $sales_item->unit_price;?></td>
                 <td><?php echo $sales_item->quantity * $sales_item->unit_price;?></td>
                 <?php $total_price += $sales_item->quantity * $sales_item->unit_price;?>
-                <td><a href="refund.php?sales_item_id=<?php echo $sales_item->sales_item_id?>" class="btn btn-primary refund">Refund</td>
+                <td>
+				<form method="GET" action="refund.php" class="form-inline">
+				Quantity
+				<input type="text" name="quantity" class="form-control" required>
+				<input type="hidden" name="sales_item_id" value="<?php echo $sales_item->sales_item_id;?>">
+				<input type="submit" name="submit" value="refund" class="btn btn-primary">
+				
+				</form>
+				</td>
             </tr>
         <?php endforeach;?>
     </tbody>
@@ -60,15 +68,7 @@ $discount = $sale->discount;
     </tfoot>
         
 </table>
-<script>
-$(document).on('click', '.refund', function(e){
-    e.preventDefault();
-    var quantity = prompt('Enter quantity to be refunded');
-    var target = $(this).attr('href');
-    var branch_id = $('#branchID').val();
-    if(quantity != null){
-        window.location.href= $(this).attr('href') + '&quantity=' + quantity + '&url=' + current_url;
-    }
-});
+</div>
 
-</script>
+<?php
+include 'footer.php';
